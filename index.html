@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Complete Graphs</title>
+
+    <style>
+    body {
+overflow:hidden;
+overflow-y:scroll;
+}
+path {
+  stroke-width: 1.5px;
+  stroke: #000;
+}
+
+circle {
+  fill: blue;
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+    </style>
+    <script src="js/d3.min.js"></script>
+
+  </head>
+  <body>
+    <center>
+    <div id="vis">
+      <script>
+
+var w = window.innerWidth*0.5;
+var h = window.innerWidth*0.5;
+var half = window.innerWidth / 4;
+
+function getPoints(n) {
+  var data = [], delta = 2 * Math.PI / n, w = 2 * half * Math.sin(delta / 2);
+  for (var i=0, a=-Math.PI; i<n; i++, a+=delta) {
+    var d = i > 0 ? data[i-1] : [half + w/2, h + 30];
+    data.push([
+      d[0] + w * Math.cos(a),
+      d[1] + w * Math.sin(a)
+    ]);
+  }
+  return data;
+}
+
+function getLines(d) {
+  var data = [];
+  for (var i=0; i<d.length-1; i++) {
+    for (var j=i; j<d.length; j++) {
+      data.push([d[i], d[j]]);
+    }
+  }
+  return data;
+}
+
+var vis = d3.select("#vis").selectAll("svg")
+
+    .data(d3.range(1,80))
+    .enter().append("svg")
+    .attr("width", w + 20)
+    .attr("height", h + 50)
+    .append("g")
+    .attr("transform", "translate(10, 10)");
+
+vis.selectAll("path")
+    .data(function(d) { return getLines(getPoints(d)); })
+  .enter().append("path")
+    .attr("d", d3.svg.line());
+
+vis.selectAll("circle")
+    .data(getPoints)
+  .enter().append("circle")
+    .attr("r", 4.5)
+    .attr("cx", function(d) { return d[0]; })
+    .attr("cy", function(d) { return d[1]; });
+
+vis.append("text")
+    .attr("dy", "1em")
+    .attr("x", w / 2)
+    .attr("text-anchor", "middle")
+    .text("K")
+  .append("tspan")
+    .attr("dy", ".5em")
+    .style("font-size", ".7em")
+    .text(String);
+
+</script>
+    </div>
+    </center>
+  </body>
+</html>
+
+
+
